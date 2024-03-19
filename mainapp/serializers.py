@@ -6,15 +6,14 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tokens
         fields = ['token']
+        extra_kwargs = {"token": {"error_messages": {"blank": "Token must be present"}}}
 
-    def validate(self, data):
-        if not data['token']:
-            return serializers.ValidationError('Token must be present')
+    def validate_token(self, value):
+        if not Tokens.objects.filter(token=value).exists():
+            raise serializers.ValidationError('Token is invalid')
 
-        if not Tokens.objects.filter(token=data['token']).all():
-            return serializers.ValidationError('Token is invalid')
+        return value
 
-        return data
 
 class GoodsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,9 +21,6 @@ class GoodsSerializer(serializers.ModelSerializer):
         fields = ['name', 'amount', 'price']
 
     def validate(self, data):
-        if not data['name']:
-            raise serializers.ValidationError('The title cannot be empty')
-
         if data['amount'] < 1:
             raise serializers.ValidationError('Amount must be more than 0')
 

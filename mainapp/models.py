@@ -11,7 +11,7 @@ class Goods(models.Model):
 
 
 class Tokens(models.Model):
-    token = models.CharField(max_length=36, unique=True)
+    token = models.CharField(max_length=36)
 
     def create_token(self):
         self.token = uuid4()
