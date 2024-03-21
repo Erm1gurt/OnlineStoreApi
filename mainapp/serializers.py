@@ -20,11 +20,14 @@ class GoodsSerializer(serializers.ModelSerializer):
         model = Goods
         fields = ['name', 'amount', 'price']
 
-    def validate(self, data):
-        if data['amount'] < 1:
+    def validate_amount(self, value):
+        if value < 1:
             raise serializers.ValidationError('Amount must be more than 0')
 
-        if data['price'] < 1:
+        return value
+
+    def validate_price(self, value):
+        if value < 1:
             raise serializers.ValidationError('Price must be more than 0')
 
-        return data
+        return value
